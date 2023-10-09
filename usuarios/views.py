@@ -19,8 +19,13 @@ def cadastro(request):
             return redirect('/usuarios/cadastro')                
         if len(senha) < 6:  
             messages.add_message(request, constants.ERROR, 'A senha tem que ter no mínimo 6 caracteres')          
-            return redirect('/usuarios/cadastro')                
-        try:            # Username deve ser único!            
+            return redirect('/usuarios/cadastro')    
+
+        if User.objects.filter(username=username).exists():
+            messages.add_message(request, constants.ERROR, 'Já existe um usuário com esse username.')
+            return redirect('/usuarios/cadastro') 
+        
+        try:                       
             user = User.objects.create_user(                
                 first_name=primeiro_nome,                
                 last_name=ultimo_nome,                
